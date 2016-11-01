@@ -1,8 +1,38 @@
+<style>
+    html {
+    font-family: "Helvetica";
+    background: white;
+    }
+    body {
+    background: lightgrey;
+    max-width: 900px;
+    margin: 0 auto;
+    }
+    #header {
+    background: lightsteelblue;
+    padding-top:5;
+    }
+    #inner-header {
+    padding-left: 10;
+    }
+    #main {
+    padding-left: 10;
+    }
+</style>
+
+
 <html>
 	<head>
 
 	<body>
-        <h1> Headlines </h1>
+    <div id="header">
+        <div id="inner-header">
+            <h1> Headlines </h1>
+            <p> headlines and weather </p>
+        </div>
+        <hr/>
+    </div>
+    <div id="main">
         <h2> Current Weather </h2>
         <form>
             <input type="text" name="city" placeholder="weather search">
@@ -24,6 +54,7 @@
             <p>{{article.summary}}</p> <br/>
             <hr/>
         {% endfor %}
+    </div>
     </body><
 	</head>
 </html>

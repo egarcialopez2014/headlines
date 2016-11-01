@@ -1,10 +1,12 @@
 from flask import Flask
 from flask import render_template
 from flask import request
+from flask import make_response
 import feedparser
-import json
 import urllib.parse
 import requests
+import datetime
+
 
 
 app = Flask(__name__)
@@ -15,23 +17,29 @@ DEFAULTS = {"publication":"bbc", "city":"London,UK"}
 RSS_FEEDS = {'bbc': "http://feeds.bbci.co.uk/news/rss.xml", 'cnn': "http://rss.cnn.com/rss/edition.rss",
              "fox": "http://feeds.foxnews.com/foxnews/latest"}
 
-
+def get_value_with_fallback(key):
+    if request.args.get(key):
+        return request.args.get(key)
+    if request.cookies.get(key):
+        return request.cookies.get(key)
+    else:
+        return DEFAULTS[key]
 
 
 @app.route("/")
 #@app.route("/<publication>")
 def home():
-    publication = request.args.get("publication")
-    if not publication:
-        publication = DEFAULTS["publication"]
+    publication = get_value_with_fallback("publication")
     articles = get_news(publication)
 
-    city = request.args.get("city")
-    if not city:
-        city = DEFAULTS["city"]
+    city = get_value_with_fallback("city")
     weather = get_weather(city)
 
-    return render_template("home.html", articles=articles, weather=weather)
+    response = make_response(render_template("home.html", articles=articles, weather=weather))
+    expires = datetime.datetime.now()+datetime.timedelta(days=365)
+    response.set_cookie("publication", publication, expires = expires)
+    response.set_cookie("city", city, expires = expires)
+    return response
 
 
 
